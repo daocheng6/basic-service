@@ -1,0 +1,50 @@
+samba service
+samba
+  跨操作系统平台使用  windows和类Unix系统文件共享服务
+
+linux server:
+SW           samba	samba-common
+service	     nmb	smb
+deamon       nmbd	smbd
+port	     137	138|139 445
+configure    /etc/samba/smb.conf
+datafile     /var/lib/samba
+logfile      /var/log/samba
+
+linux client:
+SW        samba-client
+command   smbclient
+--------------------------------------------------------------
+server:
+   service iptables stop
+   setsebool -P samba_enable_home_dirs on /打开SELinux的权限
+   smbpasswd -a student			/设置用户
+   chown nobody. /var/lib/share -R  /匿名用户需修改用户组
+
+client:
+  匿名登录：smbclient -L 172.25.x.x  匿名登录不输入密码确定即可
+	   smbclinet //172.25.32.11/share  直接登录
+  真实用户：smbclient //172.25.x.x/student -U student
+-----------------------------------------------------------------
+mount 以本地用户的方式将public挂接到 /mnt
+通过mount来访问远程主机 
+yum -y install cifs-utils
+1.匿名用户挂载
+mount -t cifs //172.25.0.11/test /mnt -o guest
+2.本地用户挂载
+mount -t cifs //172.25.0.11/test /mnt -o username=tom
+
+fstab
+1.匿名用户
+//172.25.0.11/test	/mnt	cifs	guest 0 0
+2.本地用户
+1) //172.25.0.11/test	/mnt	cifs	cred=/etc/samba.txt 0 0
+2) vim /etc/samba.txt 
+username=tom
+password=tom
+3) chmod 400 /etc/samba.txt
+
+
+windows登陆
+浏览器输入运行
+\\172.25.0.11\test
