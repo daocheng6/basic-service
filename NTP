@@ -1,0 +1,16 @@
+NTP  : network time protocol
+
+rhel6: ntpd     /etc/ntp.conf
+rhel7: chronyd  /etc/chrony.conf
+
+restrict 172.25.0.0 mask 255.255.255.0 nomodify
+
+remove below option's ###
+server 172.25.32.11
+server 127.127.1.0
+server 127.127.1.0 stratum 10
+service ntpd restart
+service iptables stop
+
+client:
+ntpdate 172.25.0.11
