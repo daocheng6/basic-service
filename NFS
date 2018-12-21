@@ -1,0 +1,26 @@
+NFS: network file system
+server: yum install -y nfs-utils  rpcbind
+nfs  处理数据传输请求 
+rpc  处理连接请求
+
+vim /etc/exports
+/tmp  172.25.32.10(rw)
+/tmp  172.25.32.0/24(ro)
+
+service nfs restart
+service rpcbind restart
+service iptables stop
+
+client: yum install -y nfs-utils  rpcbind
+showmonut -e 172.25.32.11
+mount 172.25.32.11:/tmp /mnt
+ *mount | tail -n 1
+ * umount /mnt  
+
+auto NFS
+at client to setup the auto NFS 
+yum install -y autofs
+vim /etc/auto.master   : /media  /etc/auto.media
+vim /etc/auto.media    : share   -rw 172.25.32.11:/tmp
+mkdir /media/share   
+**then stop firewall and restart the service
